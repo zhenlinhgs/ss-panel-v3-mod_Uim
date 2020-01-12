@@ -158,9 +158,12 @@ class AppURI
         return $return;
     }
 
-    public static function getClashURI($item)
+    public static function getClashURI($item, $ssr_support = false)
     {
         $return = null;
+        if ($item['type'] == 'ssr' && $ssr_support === false) {
+            return $return;
+        }
         switch ($item['type']) {
             case 'ss':
                 $method = ['rc4-md5-6', 'camellia-128-cfb', 'camellia-192-cfb', 'camellia-256-cfb', 'bf-cfb', 'cast5-cfb', 'des-cfb', 'des-ede3-cfb', 'idea-cfb', 'rc2-cfb', 'seed-cfb', 'salsa20', 'chacha20', 'xsalsa20', 'none'];
@@ -371,3 +374,4 @@ class AppURI
         return $return;
     }
 }
+
