@@ -72,12 +72,22 @@ class LinkController extends BaseController
         ];
         if (isset($opts['class'])) {
             $class = trim(urldecode($opts['class']));
-            $Rule['content']['class'] = explode('+', $class);
+            $Rule['content']['class'] = array_map(
+                function($item) {
+                    return (int) $item;
+                },
+                explode('+', $class)
+            );
             $find = true;
         }
         if (isset($opts['noclass'])) {
             $noclass = trim(urldecode($opts['noclass']));
-            $Rule['content']['noclass'] = explode('+', $noclass);
+            $Rule['content']['noclass'] = array_map(
+                function($item) {
+                    return (int) $item;
+                },
+                explode('+', $noclass)
+            );
             $find = true;
         }
         if (isset($opts['regex'])) {
@@ -398,39 +408,45 @@ class LinkController extends BaseController
 
     public static function getLists($user, $list, $opts, $Rule)
     {
-        $items = URL::getNew_AllItems($user, $Rule);
         $list = strtolower($list);
+        if ($list == 'quantumult') {
+            $Rule['type'] = 'vmess';
+        }
+        $items = URL::getNew_AllItems($user, $Rule);
         $return = [];
         foreach ($items as $item) {
             switch ($list) {
                 case 'surge':
                     # code...
-                    $return[] = AppURI::getSurgeURI($item, 3);
+                    $out = AppURI::getSurgeURI($item, 3);
                     break;
                 case 'clash':
                     # code...
-                    $return[] = AppURI::getClashURI($item);
+                    $out = AppURI::getClashURI($item);
                     break;
                 case 'clashr':
                     # code...
-                    $return[] = AppURI::getClashURI($item, true);
+                    $out = AppURI::getClashURI($item, true);
                     break;
                 case 'kitsunebi':
                     # code...
-                    $return[] = AppURI::getKitsunebiURI($item);
+                    $out = AppURI::getKitsunebiURI($item);
                     break;
                 case 'quantumult':
                     # code...
-                    $return[] = 'vmess://' . base64_encode(AppURI::getQuantumultURI($item));
+                    $out = AppURI::getQuantumultURI($item, true);
                     break;
                 case 'quantumultx':
                     # code...
-                    $return[] = AppURI::getQuantumultXURI($item);
+                    $out = AppURI::getQuantumultXURI($item);
                     break;
                 case 'shadowrocket':
                     # code...
-                    $return[] = AppURI::getShadowrocketURI($item);
+                    $out = AppURI::getShadowrocketURI($item);
                     break;
+            }
+            if ($out != null) {
+                $return[] = $out;
             }
         }
         if (in_array($list, ['clash', 'clashr'])) {

@@ -242,16 +242,16 @@ class URL
     public static function getNew_AllItems($user, $Rule)
     {
         // $Rule = [
-        //     'type'    => '',
+        //     'type'    => 'ss | ssr | vmess',
         //     'emoji'   => false,
-        //     'is_mu'   => 0
+        //     'is_mu'   => 1
         //     'content' => [
-        //         'noclass' => [],
-        //         'class'   => [],
-        //         'regex'   => '',
+        //         'noclass' => [0, 1, 2],
+        //         'class'   => [0, 1, 2],
+        //         'regex'   => '.*香港.*HKBN.*',
         //     ]
         // ];
-        $is_mu = $Rule['is_mu'];
+        $is_mu = ($Rule['is_mu'] != 0 ? $Rule['is_mu'] : 1);
         $is_ss = 0;
         $emoji = $Rule['emoji'];
         switch ($Rule['type']) {
@@ -273,14 +273,15 @@ class URL
         if ($user->is_admin) {
             $nodes = Node::whereIn('sort', $sort)->where('type', '1')->orderBy('name')->get();
         } else {
-            $nodes = Node::whereIn('sort', $sort)->where('type', '1')->where(
+            $querys = Node::query();
+            $querys->whereIn('sort', $sort)->where('type', '1')->where(
                 static function ($query) use ($user) {
                     $query->where('node_group', '=', $user->node_group)
                         ->orWhere('node_group', '=', 0);
                 }
             );
             $class = [];
-            if (isset($Rule['content']['class']) && count($Rule['content']['class'] > 0)) {
+            if (isset($Rule['content']['class']) && count($Rule['content']['class']) > 0) {
                 foreach ($Rule['content']['class'] as $x) {
                     if ($x <= $user->class && $x >= 0 && !in_array($x, $class)) {
                         $class[] = $x;
@@ -288,21 +289,22 @@ class URL
                 }
             }
             if (count($class) > 0) {
-                $nodes->whereIn('node_class', $class);
+                $querys->whereIn('node_class', $class);
             } else {
-                $nodes->where('node_class', '<=', $user->class);
+                $querys->where('node_class', '<=', $user->class);
             }
-            $nodes->orderBy('name')->get();
+            $nodes = $querys->orderBy('name')->get();
         }
         $return_array = array();
         if ($is_mu != 0 && $Rule['type'] != 'vmess') {
-            $mu_nodes = Node::where('sort', 9)->where('type', '1');
+            $query = Node::query();
+            $query->where('sort', 9)->where('type', '1');
             if ($user->is_admin) {
                 if ($is_mu != 1) {
-                    $mu_nodes->where('server', $is_mu);
+                    $query->where('server', $is_mu);
                 }
             } elseif ($is_mu != 1) {
-                $mu_nodes->where('server', $is_mu)
+                $query->where('server', $is_mu)
                     ->where('node_class', '<=', $user->class)
                     ->where(
                         static function ($query) use ($user) {
@@ -311,7 +313,7 @@ class URL
                         }
                     );
             } else {
-                $mu_nodes->where('node_class', '<=', $user->class)
+                $query->where('node_class', '<=', $user->class)
                     ->where(
                         static function ($query) use ($user) {
                             $query->where('node_group', '=', $user->node_group)
@@ -319,21 +321,23 @@ class URL
                         }
                     );
             }
-            $mu_nodes->get();
+            $mu_nodes = $query->get();
         }
         if (!Tools::is_protocol_relay($user)) {
             $relay_rules = array();
         } else {
             $relay_rules = Relay::where('user_id', $user->id)->orwhere('user_id', 0)->orderBy('id', 'asc')->get();
         }
+        $foreachss = [];
         if ($Rule['type'] == 'all') {
             $foreachss = [0, 1];
         } else {
-            $foreachss = $is_ss;
+            $foreachss[] = $is_ss;
         }
         foreach ($foreachss as $x) {
+            // all is_ss *2
             foreach ($nodes as $node) {
-                if (in_array($node->sort, [13])) {
+                if (in_array($node->sort, [13]) && (($Rule['type'] == 'all' && $x == 0) || ($Rule['type'] != 'all'))) {
                     // Rico SS (V2RayPlugin && obfs)
                     $item = self::getV2RayPluginItem($user, $node, $emoji);
                     if ($item != null) {
@@ -344,7 +348,7 @@ class URL
                     }
                     continue;
                 }
-                if (in_array($node->sort, [11, 12])) {
+                if (in_array($node->sort, [11, 12]) && (($Rule['type'] == 'all' && $x == 0) || ($Rule['type'] != 'all'))) {
                     // V2Ray
                     $item = self::getV2Url($user, $node, 1, $emoji);
                     if ($item != null) {
@@ -365,7 +369,7 @@ class URL
                             $relay_rule_id = $relay_rule->id;
                         }
                         $item = self::getItem($user, $node, 0, $relay_rule_id, $x, $emoji);
-                        if ($item != null && $find) {
+                        if ($item != null) {
                             $find = (isset($Rule['content']['regex']) && $Rule['content']['regex'] != '' ? ConfController::getMatchProxy($item, ['content' => ['regex' => $Rule['content']['regex']]]) : true);
                             if ($find) {
                                 $return_array[] = $item;
@@ -374,7 +378,7 @@ class URL
                     } else {
                         // SS 非中转
                         $item = self::getItem($user, $node, 0, 0, $x, $emoji);
-                        if ($item != null && $find) {
+                        if ($item != null) {
                             $find = (isset($Rule['content']['regex']) && $Rule['content']['regex'] != '' ? ConfController::getMatchProxy($item, ['content' => ['regex' => $Rule['content']['regex']]]) : true);
                             if ($find) {
                                 $return_array[] = $item;
@@ -393,7 +397,7 @@ class URL
                                 $relay_rule_id = $relay_rule->id;
                             }
                             $item = self::getItem($user, $node, $mu_node->server, $relay_rule_id, $x, $emoji);
-                            if ($item != null && $find) {
+                            if ($item != null) {
                                 $find = (isset($Rule['content']['regex']) && $Rule['content']['regex'] != '' ? ConfController::getMatchProxy($item, ['content' => ['regex' => $Rule['content']['regex']]]) : true);
                                 if ($find) {
                                     $return_array[] = $item;
@@ -402,7 +406,7 @@ class URL
                         } else {
                             // SS 非中转
                             $item = self::getItem($user, $node, $mu_node->server, 0, $x, $emoji);
-                            if ($item != null && $find) {
+                            if ($item != null) {
                                 $find = (isset($Rule['content']['regex']) && $Rule['content']['regex'] != '' ? ConfController::getMatchProxy($item, ['content' => ['regex' => $Rule['content']['regex']]]) : true);
                                 if ($find) {
                                     $return_array[] = $item;
@@ -414,18 +418,22 @@ class URL
             }
         }
         if (isset($Rule['content']['noclass']) && count($Rule['content']['noclass']) > 0) {
+            // 如果设置不需要的等级的节点
             $tmp = [];
             foreach ($return_array as $outnode) {
                 if (!in_array($outnode['class'], $Rule['content']['noclass'])) {
+                    // 放行节点等级不存在数组内的
                     $tmp[] = $outnode;
                 }
             }
             $return_array = $tmp;
         }
         if ($Rule['type'] != 'all') {
+            // 如果获取节点的类型不是 all
             $tmp = [];
             foreach ($return_array as $outnode) {
                 if ($outnode['type'] == $Rule['type']) {
+                    // 放行类型相同
                     $tmp[] = $outnode;
                 }
             }
