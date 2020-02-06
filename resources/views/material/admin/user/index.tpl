@@ -29,20 +29,20 @@
                         <div class="card-inner">
                             <div class="form-group form-group-label">
                                 <label class="floating-label" for="quick_create_email"> 输入 email 快速创建新用户 </label>
-                                <input class="form-control maxwidth-edit" id="quick_create_email" type="text">
+                                <input class="form-control" id="quick_create_email" type="text" style="width: 300px">
                             </div>
                         </div>
                         <div class="card-inner">
                             <div class="form-group form-group-label">
                                 <label class="floating-label" for="quick_create_remark"> 备注 </label>
-                                <input class="form-control maxwidth-edit" id="quick_create_remark" type="text">
+                                <input class="form-control" id="quick_create_remark" type="text" style="width: 300px">
                             </div>
                         </div>
 
                         <div class="card-inner">
                             <div class="form-group form-group-label">
 	                    <label class="floating-label" for="quick_create_shopid"> 选择您要开通的套餐 </label>
-                                    <select id="quick_create_shopid" class="form-control" name="quick_create_shopid">
+                                    <select id="quick_create_shopid" class="form-control" name="quick_create_shopid" style="width: 250px">
 {foreach $shops as $shop}
                                         <option value="{$shop->id}">{$shop->name}
                                         </option>
@@ -57,8 +57,7 @@
 
                         <div class="card-action">
                             <div class="card-action-btn pull-left">
-                                <a class="btn btn-flat waves-attach waves-light" id="quick_create_confirm"><span
-                                            class="icon">check</span>&nbsp;创建</a>
+                                <a class="btn btn-brand waves-attach waves-light" id="quick_create_confirm">创建</a>
                             </div>
                         </div>
                     </div>
@@ -69,13 +68,13 @@
                         <div class="card-inner">
                             <div class="form-group form-group-label">
                                 <label class="floating-label" for="quick_buy_email"> Email </label>
-                                <input class="form-control maxwidth-edit" id="quick_buy_email" type="text">
+                                <input class="form-control" id="quick_buy_email" type="text" style="width: 300px">
                             </div>
                         </div>
                         <div class="card-inner">
                             <div class="form-group form-group-label">
 	                    <label class="floating-label" for="quick_buy_shopid"> 选择您要添加的套餐 </label>
-                                    <select id="quick_buy_shopid" class="form-control" name="quick_buy_shopid">
+                                    <select id="quick_buy_shopid" class="form-control" name="quick_buy_shopid" style="width: 250px">
 {foreach $shops as $shop}
                                         <option value="{$shop->id}">{$shop->name}
                                         </option>
@@ -88,8 +87,7 @@
 
                         <div class="card-action">
                             <div class="card-action-btn pull-left">
-                                <a class="btn btn-flat waves-attach waves-light" id="quick_buy_confirm"><span
-                                            class="icon">check</span>&nbsp;确定添加</a>
+                                <a class="btn btn-brand waves-attach waves-light" id="quick_buy_confirm">确定添加</a>
                             </div>
                         </div>
                     </div>
@@ -323,7 +321,7 @@
                 success: data => {
                     $("#result").modal();
                     $$.getElementById('msg').innerHTML = data.msg;
-                    window.setTimeout("location.href='/admin/user'", 5000);
+                    window.setTimeout("location.href='/admin/user'", 1000);
                 },
                 error: jqXHR => {
                     $("#result").modal();
@@ -346,7 +344,7 @@
                 success: data => {
                     $("#result").modal();
                     $$.getElementById('msg').innerHTML = data.msg;
-                    window.setTimeout("location.href='/admin/user'", 5000);
+                    window.setTimeout("location.href='/admin/user'", 1000);
                 },
                 error: jqXHR => {
                     $("#result").modal();
