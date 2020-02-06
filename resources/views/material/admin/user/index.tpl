@@ -28,10 +28,33 @@
                     <div class="card-main">
                         <div class="card-inner">
                             <div class="form-group form-group-label">
-                                <label class="floating-label" for="quick_create"> 输入 email 快速创建新用户 </label>
-                                <input class="form-control maxwidth-edit" id="quick_create" type="text">
+                                <label class="floating-label" for="quick_create_email"> 输入 email 快速创建新用户 </label>
+                                <input class="form-control maxwidth-edit" id="quick_create_email" type="text">
                             </div>
                         </div>
+                        <div class="card-inner">
+                            <div class="form-group form-group-label">
+                                <label class="floating-label" for="quick_create_remark"> 备注 </label>
+                                <input class="form-control maxwidth-edit" id="quick_create_remark" type="text">
+                            </div>
+                        </div>
+
+                        <div class="card-inner">
+                            <div class="form-group form-group-label">
+	                    <label class="floating-label" for="quick_create_shopid"> 选择您要开通的套餐 </label>
+                                    <select id="quick_create_shopid" class="form-control" name="quick_create_shopid">
+{foreach $shops as $shop}
+                                        <option value="{$shop->id}">{$shop->name}
+                                        </option>
+{/foreach}
+                                        <option value="0" selected> 无
+                                        </option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+
+
                         <div class="card-action">
                             <div class="card-action-btn pull-left">
                                 <a class="btn btn-flat waves-attach waves-light" id="quick_create_confirm"><span
@@ -40,6 +63,38 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-main">
+                        <div class="card-inner">
+                            <div class="form-group form-group-label">
+                                <label class="floating-label" for="quick_buy_email"> Email </label>
+                                <input class="form-control maxwidth-edit" id="quick_buy_email" type="text">
+                            </div>
+                        </div>
+                        <div class="card-inner">
+                            <div class="form-group form-group-label">
+	                    <label class="floating-label" for="quick_buy_shopid"> 选择您要添加的套餐 </label>
+                                    <select id="quick_buy_shopid" class="form-control" name="quick_buy_shopid">
+{foreach $shops as $shop}
+                                        <option value="{$shop->id}">{$shop->name}
+                                        </option>
+{/foreach}
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="card-action">
+                            <div class="card-action-btn pull-left">
+                                <a class="btn btn-flat waves-attach waves-light" id="quick_buy_confirm"><span
+                                            class="icon">check</span>&nbsp;确定添加</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="table-responsive">
                     {include file='table/table.tpl'}
@@ -261,7 +316,9 @@
                 url: '/admin/user/create',
                 dataType: 'json',
                 data: {
-                    userEmail: $$getValue('quick_create')
+                    userEmail: $$getValue('quick_create_email'),
+                    userRemark: $$getValue('quick_create_remark'),
+                    userShopId: $$getValue('quick_create_shopid'),
                 },
                 success: data => {
                     $("#result").modal();
@@ -275,8 +332,31 @@
             })
         }
 
-        $$.getElementById('quick_create_confirm').addEventListener('click', quickCreate)
-    })
+        $$.getElementById('quick_create_confirm').addEventListener('click', quickCreate);
+
+        function quickBuy() {
+            $.ajax({
+                type: 'POST',
+                url: '/admin/user/buy',
+                dataType: 'json',
+                data: {
+                    userEmail: $$getValue('quick_buy_email'),
+                    userShopId: $$getValue('quick_buy_shopid'),
+                },
+                success: data => {
+                    $("#result").modal();
+                    $$.getElementById('msg').innerHTML = data.msg;
+                    window.setTimeout("location.href='/admin/user'", 5000);
+                },
+                error: jqXHR => {
+                    $("#result").modal();
+                    $$.getElementById('msg').innerHTML = `${ldelim}jqXHR{rdelim} 发生了错误。`;
+                }
+            })
+        }
+
+        $$.getElementById('quick_buy_confirm').addEventListener('click', quickBuy);
+    });
 
 
 </script>

@@ -60,15 +60,18 @@ class UserController extends AdminController
             'top_up' => '累计充值');
         $table_config['default_show_column'] = array('op', 'id', 'user_name', 'remark', 'email');
         $table_config['ajax_url'] = 'user/ajax';
-        return $this->view()->assign('table_config', $table_config)->display('admin/user/index.tpl');
+        $shops = Shop::where('status', 1)->orderBy('id')->get();
+        return $this->view()->assign('shops', $shops)->assign('table_config', $table_config)->display('admin/user/index.tpl');
     }
 
     public function createNewUser($request, $response, $args)
     {
         # 需要一个 userEmail
-        $email = $request->getParam('userEmail');
+        $email = $request->getParam('userEmail') . '@qq.com';
         $email = trim($email);
         $email = strtolower($email);
+        $remark = $request->getParam('userRemark');
+        $shopId = $request->getParam('userShopId');
         // not really user input
         //if (!Check::isEmailLegal($email)) {
         //    $res['ret'] = 0;
@@ -127,12 +130,27 @@ class UserController extends AdminController
         $user->ga_token = $secret;
         $user->ga_enable = 0;
         if ($user->save()) {
+            if ($shopId != 0) {
+                $shop = Shop::where('id', $shopId)->where('status', 1)->first();
+                $bought = new Bought();
+                $bought->userid = $user->id;
+                $bought->shopid = $shop->id;
+                $bought->coupon = '';
+                $bought->datetime = time();
+                $bought->renew = 0;
+                $price = $shop->price;
+                $bought->price = $price;
+                $bought->save();
+                $shop->buy($user);
+	    } else {
+	    	$shop->name = '无';
+            }
             $res['ret'] = 1;
-            $res['msg'] = '新用户注册成功 用户名: ' . $email . ' 随机初始密码: ' . $pass;
+            $res['msg'] = '新用户注册成功 用户名: ' . $email . ' 随机初始密码: ' . $pass . ' 添加套餐：' . $shop->name;
             $res['email_error'] = 'success';
             $subject = Config::get('appName') . '-新用户注册通知';
             $to = $user->email;
-            $text = '您好，管理员已经为您生成账户，用户名: ' . $email . '，登录密码为：' . $pass . '，感谢您的支持。 ';
+            $text = '您好，管理员已经为您生成账户，用户名: ' . $email . '，登录密码为：' . $pass . '，并添加套餐：' . $shop->name . '，感谢您的支持。 ';
             try {
                 Mail::send($to, $subject, 'newuser.tpl', [
                     'user' => $user, 'text' => $text,
@@ -153,33 +171,26 @@ class UserController extends AdminController
         #shop 信息可以通过 App\Controllers\UserController:shop 获得
         # 需要shopId，disableothers，autorenew,userEmail
 
-        $shopId = $request->getParam('shopId');
+        $shopId = $request->getParam('userShopId');
         $shop = Shop::where('id', $shopId)->where('status', 1)->first();
-        $disableothers = $request->getParam('disableothers');
-        $autorenew = $request->getParam('autorenew');
-        $email = $request->getParam('userEmail');
+        $email = $request->getParam('userEmail') . '@qq.com';
         $user = User::where('email', '=', $email)->first();
+        $autorenew = 0;
         if ($user == null) {
             $result['ret'] = 0;
             $result['msg'] = '未找到该用户';
             return $response->getBody()->write(json_encode($result));
         }
-        if ($shop == null) {
-            $result['ret'] = 0;
-            $result['msg'] = '请选择套餐';
-            return $response->getBody()->write(json_encode($result));
-        }
-        if ($disableothers == 1) {
-            $boughts = Bought::where('userid', $user->id)->get();
-            foreach ($boughts as $disable_bought) {
-                $disable_bought->renew = 0;
-                $disable_bought->save();
-            }
+        $boughts = Bought::where('userid', $user->id)->get();
+        foreach ($boughts as $disable_bought) {
+            $disable_bought->renew = 0;
+            $disable_bought->save();
         }
         $bought = new Bought();
         $bought->userid = $user->id;
         $bought->shopid = $shop->id;
         $bought->datetime = time();
+        $bought->coupon = '';
         if ($autorenew == 0 || $shop->auto_renew == 0) {
             $bought->renew = 0;
         } else {
