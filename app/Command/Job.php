@@ -156,13 +156,14 @@ class Job
         UserSubscribeLog::where('request_time', '<', date('Y-m-d H:i:s', time() - 86400 * (int) Config::get('subscribeLog_keep_days')))->delete();
 
         Token::where('expire_time', '<', time())->delete();
+	$count = (int) Config::get('log_hours');
 
-        NodeInfoLog::where('log_time', '<', time() - 86400 * 3)->delete();
-        NodeOnlineLog::where('log_time', '<', time() - 86400 * 3)->delete();
-        TrafficLog::where('log_time', '<', time() - 86400 * 3)->delete();
-        DetectLog::where('datetime', '<', time() - 86400 * 3)->delete();
-        Speedtest::where('datetime', '<', time() - 86400 * 3)->delete();
-        EmailVerify::where('expire_in', '<', time() - 86400 * 3)->delete();
+        NodeInfoLog::where('log_time', '<', time() - 3600 * $count)->delete();
+        NodeOnlineLog::where('log_time', '<', time() - 3600 * $count)->delete();
+        TrafficLog::where('log_time', '<', time() - 3600 * $count)->delete();
+        DetectLog::where('datetime', '<', time() - 3600 * $count)->delete();
+        Speedtest::where('datetime', '<', time() - 3600 * $count)->delete();
+        EmailVerify::where('expire_in', '<', time() - 3600 * $count)->delete();
         system('rm ' . BASE_PATH . '/storage/*.png', $ret);
 
         if (Config::getdb('Telegram.enable.DailyJob') !== '0') {

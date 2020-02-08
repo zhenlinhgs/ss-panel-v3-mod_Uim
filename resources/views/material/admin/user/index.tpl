@@ -10,7 +10,7 @@
         <div class="col-lg-12 col-sm-12">
             <section class="content-inner margin-top-no">
 
-                <div class="card">
+                <div class="card col-lg-4" style="flex:2">
                     <div class="card-main">
                         <div class="card-inner">
                             <p>系统中所有用户的列表。</p>
@@ -24,18 +24,18 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card col-lg-4" style="flex:2">
                     <div class="card-main">
                         <div class="card-inner">
                             <div class="form-group form-group-label">
                                 <label class="floating-label" for="quick_create_email"> 输入 email 快速创建新用户 </label>
-                                <input class="form-control" id="quick_create_email" type="text" style="width: 300px">
+                                <input class="form-control" id="quick_create_email" type="text" style="width: 250px">
                             </div>
                         </div>
                         <div class="card-inner">
                             <div class="form-group form-group-label">
                                 <label class="floating-label" for="quick_create_remark"> 备注 </label>
-                                <input class="form-control" id="quick_create_remark" type="text" style="width: 300px">
+                                <input class="form-control" id="quick_create_remark" type="text" style="width: 250px">
                             </div>
                         </div>
 
@@ -63,12 +63,12 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card col-lg-4" style="flex:3">
                     <div class="card-main">
                         <div class="card-inner">
                             <div class="form-group form-group-label">
                                 <label class="floating-label" for="quick_buy_email"> Email </label>
-                                <input class="form-control" id="quick_buy_email" type="text" style="width: 300px">
+                                <input class="form-control" id="quick_buy_email" type="text" style="width: 250px">
                             </div>
                         </div>
                         <div class="card-inner">
@@ -94,7 +94,7 @@
                 </div>
 
 
-                <div class="table-responsive">
+                <div class="table-responsive col-lg-12">
                     {include file='table/table.tpl'}
                 </div>
 
@@ -192,37 +192,37 @@
             columns: [
                 {literal}
                 {"data": "op", "orderable": false},
-                {"data": "id"},
+//                {"data": "id"},
                 {"data": "user_name"},
                 {"data": "remark"},
                 {"data": "email"},
-                {"data": "money"},
-                {"data": "im_type"},
-                {"data": "im_value"},
-                {"data": "node_group"},
+//                {"data": "money"},
+//                {"data": "im_type"},
+//                {"data": "im_value"},
+//                {"data": "node_group"},
                 {"data": "expire_in"},
                 {"data": "class"},
                 {"data": "class_expire"},
-                {"data": "passwd"},
-                {"data": "port"},
-                {"data": "method"},
-                {"data": "protocol"},
-                {"data": "obfs"},
-                {"data": "obfs_param"},
+//                {"data": "passwd"},
+//                {"data": "port"},
+//                {"data": "method"},
+//                {"data": "protocol"},
+//                {"data": "obfs"},
+//                {"data": "obfs_param"},
                 {"data": "online_ip_count", "orderable": false},
-                {"data": "last_ss_time", "orderable": false},
+//                {"data": "last_ss_time", "orderable": false},
                 {"data": "used_traffic"},
                 {"data": "enable_traffic"},
-                {"data": "last_checkin_time", "orderable": false},
-                {"data": "today_traffic"},
-                {"data": "enable"},
+//                {"data": "last_checkin_time", "orderable": false},
+//                {"data": "today_traffic"},
+//                {"data": "enable"},
                 {"data": "reg_date"},
-                {"data": "reg_ip"},
-                {"data": "auto_reset_day"},
-                {"data": "auto_reset_bandwidth"},
-                {"data": "ref_by"},
-                {"data": "ref_by_user_name", "orderable": false},
-                {"data": "top_up", "orderable": false},
+//                {"data": "reg_ip"},
+//                {"data": "auto_reset_day"},
+//                {"data": "auto_reset_bandwidth"},
+//                {"data": "ref_by"},
+//                {"data": "ref_by_user_name", "orderable": false},
+//                {"data": "top_up", "orderable": false},
                 {"data": "vmess_link", "orderadbel": false},
                 {/literal}
             ],

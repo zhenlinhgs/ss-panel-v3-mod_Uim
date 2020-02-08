@@ -397,21 +397,22 @@ table tr td:first-child {
 											</nav>
 
 											<div class="tab-pane fade active in" id="sub_center_general">
-												<p><span class="icon icon-lg text-white">filter_1</span> [ SS ]：
-													<a id="general_ss" class="copy-config btn-dl" onclick=Copyconfig("/user/getUserAllURL?type=ss","#general_ss","")><i class="material-icons icon-sm">how_to_vote</i>全部 URL</a>
-												</p>
-												<hr/>
-												<p><span class="icon icon-lg text-white">filter_2</span> [ SSR ]：
-													<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["ssr"]}"><i class="material-icons icon-sm">how_to_vote</i>订阅链接</a>.<a id="general_ssr" class="copy-config btn-dl" onclick=Copyconfig("/user/getUserAllURL?type=ssr","#general_ssr","")><i class="material-icons icon-sm">how_to_vote</i>全部 URL</a>
-												</p>
-												<hr/>
-												<p><span class="icon icon-lg text-white">filter_3</span> [ VMess ]：
+<!---												<p><span class="icon icon-lg text-white">filter_1</span> [ SS ]：
+//													<a id="general_ss" class="copy-config btn-dl" onclick=Copyconfig("/user/getUserAllURL?type=ss","#general_ss","")><i class="material-icons icon-sm">how_to_vote</i>全部 URL</a>
+//												</p>
+//												<hr/>
+//												<p><span class="icon icon-lg text-white">filter_2</span> [ SSR ]：
+//													<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["ssr"]}"><i class="material-icons icon-sm">how_to_vote</i>订阅链接</a>.<a id="general_ssr" class="copy-config btn-dl" onclick=Copyconfig("/user/getUserAllURL?type=ssr","#general_ssr","")><i class="material-icons icon-sm">how_to_vote</i>全部 URL</a>
+//												</p>
+//												<hr/>
+-->
+												<p><span class="icon icon-lg text-white">filter_1</span> [ VMess ]：
 													<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["v2ray"]}"><i class="material-icons icon-sm">how_to_vote</i>订阅链接</a>.<a id="general_v2ray" class="copy-config btn-dl" onclick=Copyconfig("/user/getUserAllURL?type=v2ray","#general_v2ray","")><i class="material-icons icon-sm">how_to_vote</i>全部 URL</a>
 												</p>
 											</div>
 
 											<div class="tab-pane fade" id="sub_center_windows">
-												<p><span class="icon icon-lg text-white">filter_1</span> <a class="btn-dl" href="{if $config["subscribe_client"]===true}{if $config["subscribe_client_url"]==''}/user/getPcClient{else}{$config["subscribe_client_url"]}/getClient/{$getClient}{/if}?type=ss-win{else}https://github.com/shadowsocks/shadowsocks-windows/releases{/if}"><i class="material-icons">save_alt</i> 下载</a> SS - [ SS ]：</p>
+<!---												<p><span class="icon icon-lg text-white">filter_1</span> <a class="btn-dl" href="{if $config["subscribe_client"]===true}{if $config["subscribe_client_url"]==''}/user/getPcClient{else}{$config["subscribe_client_url"]}/getClient/{$getClient}{/if}?type=ss-win{else}https://github.com/shadowsocks/shadowsocks-windows/releases{/if}"><i class="material-icons">save_alt</i> 下载</a> SS - [ SS ]：</p>
 													<p>教程文档：<a class="btn-dl" href="/doc/#/Windows/Shadowsocks"><i class="material-icons icon-sm">how_to_vote</i>点击查看</a></p>
 													<p>使用方式：<a id="win_ss" class="copy-config btn-dl" onclick=Copyconfig("/user/getUserAllURL?type=ss","#win_ss","")><i class="material-icons icon-sm">how_to_vote</i>全部 URL</a></p>
 												<hr/>
@@ -423,15 +424,16 @@ table tr td:first-child {
 													<p>教程文档：<a class="btn-dl" href="/doc/#/Windows/ShadowsocksR"><i class="material-icons icon-sm">how_to_vote</i>点击查看</a></p>
 													<p>使用方式：<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["ssr"]}"><i class="material-icons icon-sm">how_to_vote</i>订阅链接</a>.<a id="win_ssr" class="copy-config btn-dl" onclick=Copyconfig("/user/getUserAllURL?type=ssr","#win_ssr","")><i class="material-icons icon-sm">how_to_vote</i>全部 URL</a></p>
 												<hr/>
-												<p><span class="icon icon-lg text-white">filter_4</span> <a class="btn-dl" href="{if $config["subscribe_client"]===true}{if $config["subscribe_client_url"]==''}/user/getPcClient{else}{$config["subscribe_client_url"]}/getClient/{$getClient}{/if}?type=v2rayn-win{else}https://github.com/2dust/v2rayN/releases{/if}"><i class="material-icons">save_alt</i> 下载</a> V2RayN - [ SS/VMess ]：</p>
+-->
+												<p><span class="icon icon-lg text-white">filter_1</span> <a class="btn-dl" href="{if $config["subscribe_client"]===true}{if $config["subscribe_client_url"]==''}/user/getPcClient{else}{$config["subscribe_client_url"]}/getClient/{$getClient}{/if}?type=v2rayn-win{else}https://github.com/2dust/v2rayN/releases{/if}"><i class="material-icons">save_alt</i> 下载</a> V2RayN - [ SS/VMess ]：</p>
 													<p>教程文档：<a class="btn-dl" href="/doc/#/Windows/V2RayN"><i class="material-icons icon-sm">how_to_vote</i>点击查看</a></p>
 													<p>使用方式：<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["v2ray"]}"><i class="material-icons icon-sm">how_to_vote</i>订阅链接</a>.<a id="win_v2rayn" class="copy-config btn-dl" onclick=Copyconfig("/user/getUserAllURL?type=v2ray","#win_v2rayn","")><i class="material-icons icon-sm">how_to_vote</i>全部 URL</a></p>
 												<hr/>
-												<p><span class="icon icon-lg text-white">filter_5</span> <a class="btn-dl" href="https://github.com/Fndroid/clash_for_windows_pkg/releases"><i class="material-icons">save_alt</i> 下载</a> Clash for Windows - [ SS/VMess ]：</p>
+												<p><span class="icon icon-lg text-white">filter_2</span> <a class="btn-dl" href="https://github.com/Fndroid/clash_for_windows_pkg/releases"><i class="material-icons">save_alt</i> 下载</a> Clash for Windows - [ SS/VMess ]：</p>
 													<p>教程文档：<a class="btn-dl" href="/doc/#/Windows/Clash-for-Windows"><i class="material-icons icon-sm">how_to_vote</i>点击查看</a></p>
 													<p>使用方式：<a class="btn-dl" href="{$subInfo["clash"]}"><i class="material-icons icon-sm">how_to_vote</i>配置下载</a>.<a class="btn-dl" href="clash://install-config?url={urlencode($subInfo["clash"])}"><i class="material-icons icon-sm">how_to_vote</i>Clash for Windows 一键导入</a></p>
                                             	<hr/>
-												<p><span class="icon icon-lg text-white">filter_6</span> <a class="btn-dl" href="#"><i class="material-icons">save_alt</i> 下载</a> ClashR for Windows - [ SS/SSR/VMess ]：</p>
+												<p><span class="icon icon-lg text-white">filter_3</span> <a class="btn-dl" href="#"><i class="material-icons">save_alt</i> 下载</a> ClashR for Windows - [ SS/SSR/VMess ]：</p>
 													<p>教程文档：自行摸索</p>
 													<p>使用方式：<a class="btn-dl" href="{$subInfo["clashr"]}"><i class="material-icons icon-sm">how_to_vote</i>配置下载</a>.<a class="btn-dl" href="clash://install-config?url={urlencode($subInfo["clashr"])}"><i class="material-icons icon-sm">how_to_vote</i>ClashR for Windows 一键导入</a></p>
 											</div>
@@ -492,6 +494,7 @@ table tr td:first-child {
 											</div>
 
 											<div class="tab-pane fade" id="sub_center_android">
+<!--
 												<p><span class="icon icon-lg text-white">filter_1</span> <a class="btn-dl" href="https://github.com/shadowsocks/shadowsocks-android/releases"><i class="material-icons">save_alt</i> 下载</a> SS - [ SS ]：</p>
 													<p>教程文档：<a class="btn-dl" href="/doc/#/Android/Shadowsocks-Android"><i class="material-icons icon-sm">how_to_vote</i>点击查看</a></p>
 													<p>使用方式：<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["ssa"]}"><i class="material-icons icon-sm">how_to_vote</i>拷贝链接</a></p>
@@ -504,15 +507,18 @@ table tr td:first-child {
 													<p>教程文档：<a class="btn-dl" href="/doc/#/Android/ShadowsocksR"><i class="material-icons icon-sm">how_to_vote</i>点击查看</a></p>
 													<p>使用方式：<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["ssr"]}"><i class="material-icons icon-sm">how_to_vote</i>拷贝链接</a></p>
 												<hr/>
-												<p><span class="icon icon-lg text-white">filter_4</span> <a class="btn-dl" href="https://github.com/2dust/v2rayNG/releases"><i class="material-icons">save_alt</i> 下载</a> V2rayNG - [ SS/VMess ]：</p>
+-->
+												<p><span class="icon icon-lg text-white">filter_1</span> <a class="btn-dl" href="https://github.com/2dust/v2rayNG/releases"><i class="material-icons">save_alt</i> 下载</a> V2rayNG - [ SS/VMess ]：</p>
 													<p>教程文档：<a class="btn-dl" href="/doc/#/Android/V2rayNG"><i class="material-icons icon-sm">how_to_vote</i>点击查看</a></p>
 													<p>使用方式：<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["v2ray"]}"><i class="material-icons icon-sm">how_to_vote</i>拷贝链接</a></p>
 												<hr/>
+<!--
 												<p><span class="icon icon-lg text-white">filter_5</span> <a class="btn-dl" href="https://rink.hockeyapp.net/recruit/2113783c503645abb0a5ec6317e1a169"><i class="material-icons">save_alt</i> 下载</a> Surfboard - [ SS ]：</p>
 													<p>教程文档：<a class="btn-dl" href="/doc/#/Android/Surfboard"><i class="material-icons icon-sm">how_to_vote</i>点击查看</a></p>
 													<p>使用方式：<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["surfboard"]}"><i class="material-icons icon-sm">how_to_vote</i>拷贝托管</a>.<a class="btn-dl" href="{$subInfo["surfboard"]}"><i class="material-icons icon-sm">how_to_vote</i>配置下载</a></p>
 												<hr/>
-												<p><span class="icon icon-lg text-white">filter_6</span> <a class="btn-dl" href="https://play.google.com/store/apps/details?id=fun.kitsunebi.kitsunebi4android&hl=zh"><i class="material-icons">save_alt</i> 下载</a> Kitsunebi - [ SS/VMess ]：</p>
+-->
+												<p><span class="icon icon-lg text-white">filter_2</span> <a class="btn-dl" href="https://play.google.com/store/apps/details?id=fun.kitsunebi.kitsunebi4android&hl=zh"><i class="material-icons">save_alt</i> 下载</a> Kitsunebi - [ SS/VMess ]：</p>
 													<p>教程文档：<a class="btn-dl" href="/doc/#/Android/Kitsunebi"><i class="material-icons icon-sm">how_to_vote</i>点击查看</a></p>
 													<p>使用方式：<a class="copy-text btn-dl" data-clipboard-text="{$subInfo["kitsunebi"]}"><i class="material-icons icon-sm">how_to_vote</i>SS + V2 混合订阅</a></p>
 											</div>
