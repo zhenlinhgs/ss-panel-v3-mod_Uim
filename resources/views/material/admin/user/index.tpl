@@ -159,8 +159,16 @@
 
 
 {include file='admin/footer.tpl'}
-
+<script src="https://cdn.jsdelivr.net/npm/clipboard@1.5.16/dist/clipboard.min.js"></script>
 <script>
+    $(function(){
+            new Clipboard('.copy-text');
+    });
+
+    $(".copy-text").click(function () {
+        $("#result").modal();
+        $$.getElementById('msg').innerHTML = '复制成功';
+    });
 
     function delete_modal_show(id) {
         deleteid = id;
@@ -216,7 +224,8 @@
                 {"data": "auto_reset_bandwidth"},
                 {"data": "ref_by"},
                 {"data": "ref_by_user_name", "orderable": false},
-                {"data": "top_up", "orderable": false}
+                {"data": "top_up", "orderable": false},
+                {"data": "vmess_link", "orderadbel": false},
                 {/literal}
             ],
             "columnDefs": [

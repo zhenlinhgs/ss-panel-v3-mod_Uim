@@ -655,6 +655,7 @@ class LinkController extends BaseController
         if (!in_array($list, ['quantumult', 'quantumultx', 'shadowrocket'])) {
             $info_array[] = $unusedTraffic;
             $info_array[] = $expire_in;
+            $info_array[] = '用户：' . $user->email;
         }
         $baseUrl = explode('//', Config::get('baseUrl'))[1];
         $Extend_ss = [

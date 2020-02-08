@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\Controllers\LinkController;
 use App\Models\Bought;
 use App\Models\Ip;
 use App\Models\Relay;
@@ -57,7 +58,9 @@ class UserController extends AdminController
             'auto_reset_bandwidth' => '自动重置流量/GB',
             'ref_by' => '邀请人ID',
             'ref_by_user_name' => '邀请人用户名',
-            'top_up' => '累计充值');
+	    'top_up' => '累计充值',
+            'vmess_link' => 'v2订阅链接',
+            );
         $table_config['default_show_column'] = array('op', 'id', 'user_name', 'remark', 'email');
         $table_config['ajax_url'] = 'user/ajax';
         $shops = Shop::where('status', 1)->orderBy('id')->get();
@@ -515,6 +518,7 @@ class UserController extends AdminController
 
         $data = array();
         foreach ($users as $user) {
+            $subInfo = LinkController::getSubinfo($user, 0);
             $tempdata = array();
             //model里是casts所以没法直接 $tempdata=(array)$user
             $tempdata['op'] = '<a class="btn btn-brand" href="/admin/user/' . $user->id . '/edit">编辑</a>
@@ -575,6 +579,7 @@ class UserController extends AdminController
             }
 
             $tempdata['top_up'] = $user->get_top_up();
+            $tempdata['vmess_link'] = '<a class="btn btn-brand copy-text" data-clipboard-text=' . $subInfo["v2ray"] . '>复制链接</a>';
 
             $data[] = $tempdata;
         }
