@@ -169,7 +169,7 @@ class UserController extends AdminController
         return $response->getBody()->write(json_encode($res));
     }
 
-    public function buy($request, $response, $args)
+    public function quickbuy($request, $response, $args)
     {
         #shop 信息可以通过 App\Controllers\UserController:shop 获得
         # 需要shopId，disableothers，autorenew,userEmail
@@ -194,6 +194,54 @@ class UserController extends AdminController
         $bought->shopid = $shop->id;
         $bought->datetime = time();
         $bought->coupon = '';
+        if ($autorenew == 0 || $shop->auto_renew == 0) {
+            $bought->renew = 0;
+        } else {
+            $bought->renew = time() + $shop->auto_renew * 86400;
+        }
+
+        $price = $shop->price;
+        $bought->price = $price;
+        $bought->save();
+
+        $shop->buy($user);
+        $result['ret'] = 1;
+        $result['msg'] = '套餐添加成功';
+        return $response->getBody()->write(json_encode($result));
+    }
+
+    public function buy($request, $response, $args)
+    {
+        #shop 信息可以通过 App\Controllers\UserController:shop 获得
+        # 需要shopId，disableothers，autorenew,userEmail
+
+        $shopId = $request->getParam('shopId');
+        $shop = Shop::where('id', $shopId)->where('status', 1)->first();
+        $disableothers = $request->getParam('disableothers');
+        $autorenew = $request->getParam('autorenew');
+        $email = $request->getParam('userEmail');
+        $user = User::where('email', '=', $email)->first();
+        if ($user == null) {
+            $result['ret'] = 0;
+            $result['msg'] = '未找到该用户';
+            return $response->getBody()->write(json_encode($result));
+        }
+        if ($shop == null) {
+            $result['ret'] = 0;
+            $result['msg'] = '请选择套餐';
+            return $response->getBody()->write(json_encode($result));
+        }
+        if ($disableothers == 1) {
+            $boughts = Bought::where('userid', $user->id)->get();
+            foreach ($boughts as $disable_bought) {
+                $disable_bought->renew = 0;
+                $disable_bought->save();
+            }
+        }
+        $bought = new Bought();
+        $bought->userid = $user->id;
+        $bought->shopid = $shop->id;
+        $bought->datetime = time();
         if ($autorenew == 0 || $shop->auto_renew == 0) {
             $bought->renew = 0;
         } else {

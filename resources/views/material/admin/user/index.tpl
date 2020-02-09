@@ -10,7 +10,7 @@
         <div class="col-lg-12 col-sm-12">
             <section class="content-inner margin-top-no">
 
-                <div class="card col-lg-4" style="flex:2">
+                <div class="card col-lg-4" style="flex: 1; height: 300px;">
                     <div class="card-main">
                         <div class="card-inner">
                             <p>系统中所有用户的列表。</p>
@@ -24,7 +24,7 @@
                     </div>
                 </div>
 
-                <div class="card col-lg-4" style="flex:2">
+                <div class="card col-lg-4" style="flex: 2; height: 300px;">
                     <div class="card-main">
                         <div class="card-inner">
                             <div class="form-group form-group-label">
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <div class="card col-lg-4" style="flex:3">
+                <div class="card col-lg-4" style="flex: 3; height: 300px;">
                     <div class="card-main">
                         <div class="card-inner">
                             <div class="form-group form-group-label">
@@ -344,7 +344,7 @@
         function quickBuy() {
             $.ajax({
                 type: 'POST',
-                url: '/admin/user/buy',
+                url: '/admin/user/quickbuy',
                 dataType: 'json',
                 data: {
                     userEmail: $$getValue('quick_buy_email'),
