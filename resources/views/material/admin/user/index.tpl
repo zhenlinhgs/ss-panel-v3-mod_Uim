@@ -203,7 +203,7 @@
                 {"data": "expire_in"},
                 {"data": "class"},
                 {"data": "class_expire"},
-//                {"data": "passwd"},
+                {"data": "passwd"},
 //                {"data": "port"},
 //                {"data": "method"},
 //                {"data": "protocol"},

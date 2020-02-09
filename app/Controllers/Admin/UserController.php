@@ -39,7 +39,7 @@ class UserController extends AdminController
             'expire_in' => '账户过期时间',
             'class' => '等级',
             'class_expire' => '等级过期时间',
-//            'passwd' => '连接密码',
+            'passwd' => '连接密码',
 //            'port' => '连接端口',
 //            'method' => '加密方式',
 //            'protocol' => '连接协议',
@@ -90,11 +90,11 @@ class UserController extends AdminController
         }
         // do reg user
         $user = new User();
-        $pass = Tools::genRandomChar();
+        $pass = Tools::genRandomChar(6);
         $user->user_name = $email;
         $user->email = $email;
         $user->pass = Hash::passwordHash($pass);
-        $user->passwd = Tools::genRandomChar(6);
+        $user->passwd = $pass;
         $user->port = Tools::getAvPort();
         $user->t = 0;
         $user->u = 0;
@@ -145,15 +145,16 @@ class UserController extends AdminController
                 $bought->price = $price;
                 $bought->save();
                 $shop->buy($user);
+	    	$shopname = $shop->name;
 	    } else {
-	    	$shop->name = '无';
+	    	$shopname = '无';
             }
             $res['ret'] = 1;
-            $res['msg'] = '新用户注册成功 用户名: ' . $email . ' 随机初始密码: ' . $pass . ' 添加套餐：' . $shop->name;
+            $res['msg'] = '新用户注册成功 用户名: ' . $email . ' 随机初始密码: ' . $pass . ' 添加套餐：' . $shopname;
             $res['email_error'] = 'success';
             $subject = Config::get('appName') . '-新用户注册通知';
             $to = $user->email;
-            $text = '您好，管理员已经为您生成账户，用户名: ' . $email . '，登录密码为：' . $pass . '，并添加套餐：' . $shop->name . '，感谢您的支持。 ';
+            $text = '您好，管理员已经为您生成账户，用户名: ' . $email . '，登录密码为：' . $pass . '，并添加套餐：' . $shopname . '，感谢您的支持。 ';
             try {
                 Mail::send($to, $subject, 'newuser.tpl', [
                     'user' => $user, 'text' => $text,
@@ -597,7 +598,11 @@ class UserController extends AdminController
             $tempdata['expire_in'] = $user->expire_in;
             $tempdata['class'] = $user->class;
             $tempdata['class_expire'] = $user->class_expire;
-            $tempdata['passwd'] = $user->passwd;
+	    if (Hash::checkPassword($user->pass, $user->passwd)) {
+		    $tempdata['passwd'] = $user->passwd;
+	    } else {
+		    $tempdata['passwd'] = '注册或已修改';
+	    }
             $tempdata['port'] = $user->port;
             $tempdata['method'] = $user->method;
             $tempdata['protocol'] = $user->protocol;
