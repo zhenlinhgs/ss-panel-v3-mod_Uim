@@ -70,5 +70,5 @@ Proxy Group:
 {elseif $Profiles == 'ConnersHua_BacktoCN'}
 {include file='rule/ConnersHua_BacktoCN.yaml'}
 {else}
-{include file='rule/lhie1_Rule.yaml'}
+{include file='rule/my.yaml'}
 {/if}

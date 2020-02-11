@@ -508,41 +508,97 @@ class AppsProfiles
                 ]
             ],
             '123456' => [
-                'Checks' => [],
+                'Checks' => ['美国', '新加坡', '香港', '日本', '俄罗斯', '台湾', '加拿大', '英国', '德国', '法国', '马来西亚', '印度'],
                 'ProxyGroup' => [
                     [
                         'name' => 'Proxy',
                         'type' => 'select',
                         'content' => [
-                            'regex' => '(.*)'
+                            'left-proxies' => ['美国', '新加坡', '香港', '日本', '俄罗斯', '台湾', '加拿大', '英国', '德国', '法国', '马来西亚', '印度']
                         ]
                     ],
                     [
-                        'name' => 'Domestic',
+                        'name' => '美国',
                         'type' => 'select',
                         'content' => [
-                            'left-proxies' => ['DIRECT', 'Proxy']
+                            'regex' => '(美国)'
                         ]
                     ],
                     [
-                        'name' => 'AsianTV',
+                        'name' => '新加坡',
                         'type' => 'select',
                         'content' => [
-                            'left-proxies' => ['Domestic', 'Proxy']
+                            'regex' => '(新加坡)'
                         ]
                     ],
                     [
-                        'name' => 'GlobalTV',
+                        'name' => '香港',
                         'type' => 'select',
                         'content' => [
-                            'left-proxies' => ['Proxy']
+                            'regex' => '(香港)'
                         ]
                     ],
                     [
-                        'name' => 'Others',
+                        'name' => '日本',
                         'type' => 'select',
                         'content' => [
-                            'left-proxies' => ['Proxy', 'Domestic']
+                            'regex' => '(日本)'
+                        ]
+                    ],
+                    [
+                        'name' => '俄罗斯',
+                        'type' => 'select',
+                        'content' => [
+                            'regex' => '(俄罗斯)'
+                        ]
+                    ],
+                    [
+                        'name' => '台湾',
+                        'type' => 'select',
+                        'content' => [
+                            'regex' => '(台湾)'
+                        ]
+                    ],
+                    [
+                        'name' => '加拿大',
+                        'type' => 'select',
+                        'content' => [
+                            'regex' => '(加拿大)'
+                        ]
+                    ],
+                    [
+                        'name' => '英国',
+                        'type' => 'select',
+                        'content' => [
+                            'regex' => '(英国)'
+                        ]
+                    ],
+                    [
+                        'name' => '德国',
+                        'type' => 'select',
+                        'content' => [
+                            'regex' => '(德国)'
+                        ]
+                    ],
+                    [
+                        'name' => '法国',
+                        'type' => 'select',
+                        'content' => [
+                            'regex' => '(法国)'
+                        ]
+                    ],
+                    [
+                        'name' => '马来西亚',
+                        'type' => 'select',
+                        'content' => [
+                            'regex' => '(马来西亚)'
+                        ]
+                    ],
+                    [
+                        'name' => '印度',
+                        'type' => 'select',
+                        'content' => [
+                            'regex' => '(印度)'
                         ]
                     ]
                 ]
