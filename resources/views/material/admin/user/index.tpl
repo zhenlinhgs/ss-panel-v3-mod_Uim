@@ -75,10 +75,10 @@
                             <div class="form-group form-group-label">
 	                    <label class="floating-label" for="quick_buy_shopid"> 选择您要添加的套餐 </label>
                                     <select id="quick_buy_shopid" class="form-control" name="quick_buy_shopid" style="width: 250px">
-{foreach $shops as $shop}
+                                    {foreach $shops as $shop}
                                         <option value="{$shop->id}">{$shop->name}
                                         </option>
-{/foreach}
+                                    {/foreach}
                                     </select>
                                 </label>
                             </div>
@@ -87,15 +87,40 @@
 
                         <div class="card-action">
                             <div class="card-action-btn pull-left">
-                                <a class="btn btn-brand waves-attach waves-light" id="quick_buy_confirm">确定添加</a>
+                                <a class="btn btn-brand waves-attach waves-light" id="quick_buy_confirm">确定</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
 
+
                 <div class="table-responsive col-lg-12">
                     {include file='table/table.tpl'}
+                </div>
+
+                <div class="card col-lg-12">
+                    <div class="card-main">
+                        <div class="card-inner">
+                            <div class="form-group form-group-label">
+                                <label class="floating-label" for="addall_transfer"> 统一添加的流量(单位: G) </label>
+                                <input class="form-control" id="addall_transfer" type="text" style="width: 250px">
+                            </div>
+                        </div>
+                        <div class="card-inner">
+                            <div class="form-group form-group-label">
+                                <label class="floating-label" for="addall_time"> 统一添加的时长(单位: 天) </label>
+                                <input class="form-control" id="addall_time" type="text" style="width: 250px">
+                            </div>
+                        </div>
+
+
+                        <div class="card-action">
+                            <div class="card-action-btn pull-left">
+                                <a class="btn btn-brand waves-attach waves-light" id="addall_confirm">确定</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div aria-hidden="true" class="modal modal-va-middle fade" id="delete_modal" role="dialog"
@@ -363,6 +388,28 @@
         }
 
         $$.getElementById('quick_buy_confirm').addEventListener('click', quickBuy);
+
+       function addAll() {
+            $.ajax({
+                type: 'POST',
+                url: '/admin/user/addall',
+                dataType: 'json',
+                data: {
+                    userAddTransfer: $$getValue('addall_transfer'),
+                    userAddTime: $$getValue('addall_time'),
+                },
+                success: data => {
+                    $("#result").modal();
+                    $$.getElementById('msg').innerHTML = data.msg;
+                    window.setTimeout("location.href='/admin/user'", 1000);
+                },
+                error: jqXHR => {
+                    $("#result").modal();
+                    $$.getElementById('msg').innerHTML = `${ldelim}jqXHR{rdelim} 发生了错误。`;
+                }
+            })
+        }
+        $$.getElementById('addall_confirm').addEventListener('click', addAll);
     });
 
 

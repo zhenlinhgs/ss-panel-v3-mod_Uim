@@ -212,6 +212,27 @@ class UserController extends AdminController
         return $response->getBody()->write(json_encode($result));
     }
 
+    public function addall($request, $response, $args)
+    {
+        $users = User::where('class', '>', 0)->orderBy('id')->get();
+	$addtransfer = Tools::toGB($request->getParam('userAddTransfer'));
+	$addtime = $request->getParam('userAddTime');
+	if ($addtransfer == null || $addtime == null) {
+            $result['ret'] = 0;
+	    $result['msg'] = $addtransfer . $addtime . '添加的流量或者日期不能为空';
+            return $response->getBody()->write(json_encode($result));
+	}
+	foreach ($users as $user) {
+	    $user->expire_in = date('Y-m-d H:i:s',  strtotime($user->expire_in) + $addtime * 86400);
+	    $user->class_expire = date('Y-m-d H:i:s',  strtotime($user->class_expire) + $addtime * 86400);
+	    $user->transfer_enable += $addtransfer;
+	    $user->save();
+	}
+        $result['ret'] = 1;
+        $result['msg'] = '添加成功';
+        return $response->getBody()->write(json_encode($result));
+    }
+
     public function buy($request, $response, $args)
     {
         #shop 信息可以通过 App\Controllers\UserController:shop 获得
