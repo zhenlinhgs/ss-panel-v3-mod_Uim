@@ -35,7 +35,7 @@ class UserController extends AdminController
 //            'money' => '金钱',
 //            'im_type' => '联络方式类型',
 //            'im_value' => '联络方式详情',
-//            'node_group' => '群组',
+            'node_group' => '群组',
             'expire_in' => '账户过期时间',
             'class' => '等级',
             'class_expire' => '等级过期时间',
@@ -70,8 +70,8 @@ class UserController extends AdminController
     public function createNewUser($request, $response, $args)
     {
         # 需要一个 userEmail
-        $email = $request->getParam('userEmail') . '@qq.com';
-        $email = trim($email);
+        $email = $request->getParam('userEmail');
+        $email = trim($email) . '@qq.com';
         $email = strtolower($email);
         $remark = $request->getParam('userRemark');
         $shopId = $request->getParam('userShopId');
@@ -178,7 +178,9 @@ class UserController extends AdminController
 
         $shopId = $request->getParam('userShopId');
         $shop = Shop::where('id', $shopId)->where('status', 1)->first();
-        $email = $request->getParam('userEmail') . '@qq.com';
+        $email = $request->getParam('userEmail');
+        $email = trim($email) . '@qq.com';
+        //$email = strtolower($email);
         $user = User::where('email', '=', $email)->first();
         $autorenew = 0;
         if ($user == null) {
@@ -208,7 +210,7 @@ class UserController extends AdminController
 
         $shop->buy($user);
         $result['ret'] = 1;
-        $result['msg'] = '套餐添加成功';
+        $result['msg'] = $email . '套餐添加成功';
         return $response->getBody()->write(json_encode($result));
     }
 
@@ -654,7 +656,8 @@ class UserController extends AdminController
             }
 
             $tempdata['top_up'] = $user->get_top_up();
-            $tempdata['vmess_link'] = '<a class="btn btn-brand copy-text" data-clipboard-text=' . $subInfo["v2ray"] . '>复制链接</a>';
+	    $tempdata['vmess_link'] = '<a class="btn btn-brand copy-text" data-clipboard-text=' . $subInfo["v2ray"] . '>复制V2Ray链接</a>
+                                       <a class="btn btn-brand copy-text" data-clipboard-text=' . $subInfo["clash"] . '>复制ClashX链接</a>';
 
             $data[] = $tempdata;
         }
