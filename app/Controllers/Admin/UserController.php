@@ -217,13 +217,15 @@ class UserController extends AdminController
     public function addall($request, $response, $args)
     {
         $users = User::where('class', '>', 0)->orderBy('id')->get();
+	$transfer_temp = $request->getParam('userAddTransfer');
 	$addtransfer = Tools::toGB($request->getParam('userAddTransfer'));
 	$addtime = $request->getParam('userAddTime');
-	if ($addtransfer == null || $addtime == null) {
-            $result['ret'] = 0;
-	    $result['msg'] = $addtransfer . $addtime . '添加的流量或者日期不能为空';
-            return $response->getBody()->write(json_encode($result));
-	}
+	if ($addtransfer == null) {
+            $addtransfer = 0;
+        }
+        if ($addtime == null) {
+            $addtime = 0;
+        }
 	foreach ($users as $user) {
 	    $user->expire_in = date('Y-m-d H:i:s',  strtotime($user->expire_in) + $addtime * 86400);
 	    $user->class_expire = date('Y-m-d H:i:s',  strtotime($user->class_expire) + $addtime * 86400);
@@ -231,7 +233,7 @@ class UserController extends AdminController
 	    $user->save();
 	}
         $result['ret'] = 1;
-        $result['msg'] = '添加成功';
+	$result['msg'] = '添加成功，已为所有非0级用户添加' . $transfer_temp . 'G流量和' . $addtime . '天时长';
         return $response->getBody()->write(json_encode($result));
     }
 
