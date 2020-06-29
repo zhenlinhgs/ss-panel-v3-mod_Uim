@@ -1102,6 +1102,11 @@ class UserController extends BaseController
         } else {
             $bought->renew = time() + $shop->auto_renew * 86400;
         }
+	if ($shop->reset() > 0 && !empty($shop->reset())) {
+            $bought->reset = time() + $shop->reset() * 86400;
+	} else {
+            $bought->reset = 0;
+        }
 
         $bought->coupon = $code;
 

@@ -305,6 +305,7 @@ $app->group('/admin', function () {
     $this->put('/user/{id}', App\Controllers\Admin\UserController::class . ':update');
     $this->delete('/user', App\Controllers\Admin\UserController::class . ':delete');
     $this->post('/user/changetouser', App\Controllers\Admin\UserController::class . ':changetouser');
+    $this->post('/user/resetuser', App\Controllers\Admin\UserController::class . ':resetuser');
     $this->post('/user/ajax', App\Controllers\Admin\UserController::class . ':ajax');
     $this->post('/user/create', App\Controllers\Admin\UserController::class . ':createNewUser');
     $this->post('/user/buy', App\Controllers\Admin\UserController::class . ':buy');

@@ -661,7 +661,7 @@ class LinkController extends BaseController
         $Extend_ss = [
             'remark'    => '',
             'type'      => 'ss',
-            'address'   => $baseUrl,
+            'address'   => '',
             'port'      => 10086,
             'method'    => 'chacha20-ietf-poly1305',
             'passwd'    => $user->passwd,
@@ -671,7 +671,7 @@ class LinkController extends BaseController
         $Extend_ssr = [
             'remark'    => '',
             'type'      => 'ssr',
-            'address'   => $baseUrl,
+            'address'   => '',
             'port'      => 10086,
             'method'    => 'chacha20-ietf',
             'passwd'    => $user->passwd,
@@ -682,7 +682,7 @@ class LinkController extends BaseController
         $Extend_VMess = [
             'remark'    => '',
             'type'      => 'vmess',
-            'add'       => $baseUrl,
+            'add'       => '',
             'port'      => 10086,
             'id'        => $user->getUuid(),
             'alterId'   => 0,
@@ -925,6 +925,7 @@ class LinkController extends BaseController
                 $Proxys[] = $Proxy;
             }
         }
+	$Proxys = array_merge($Proxys, self::getListExtend($user, 'clash'));
         if (isset($opts['source']) && $opts['source'] != '') {
             $SourceURL = trim(urldecode($opts['source']));
             // 远程规则仅支持 github 以及 gitlab
@@ -1465,10 +1466,10 @@ class LinkController extends BaseController
                 $getListExtend = $Rule['extend'] ? self::getListExtend($user, 'ssr') : [];
                 break;
         }
+        $return_url .= URL::get_NewAllUrl($user, $Rule);
         if ($Rule['extend']) {
             $return_url .= implode(PHP_EOL, $getListExtend) . PHP_EOL;
         }
-        $return_url .= URL::get_NewAllUrl($user, $Rule);
         return base64_encode($return_url);
     }
 }

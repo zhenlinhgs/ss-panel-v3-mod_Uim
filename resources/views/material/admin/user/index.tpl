@@ -171,6 +171,30 @@
                         </div>
                     </div>
                 </div>
+                <div aria-hidden="true" class="modal modal-va-middle fade" id="resetuser_modal" role="dialog"
+                     tabindex="-1">
+                    <div class="modal-dialog modal-xs">
+                        <div class="modal-content">
+                            <div class="modal-heading">
+                                <a class="modal-close" data-dismiss="modal">×</a>
+                                <h2 class="modal-title">确认要重置该用户？</h2>
+                            </div>
+                            <div class="modal-inner">
+                                <p>请您确认。</p>
+                            </div>
+                            <div class="modal-footer">
+                                <p class="text-right">
+                                    <button class="btn btn-flat btn-brand-accent waves-attach waves-effect"
+                                            data-dismiss="modal" type="button">取消
+                                    </button>
+                                    <button class="btn btn-flat btn-brand-accent waves-attach" data-dismiss="modal"
+                                            id="resetuser_input" type="button">确定
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {include file='dialog.tpl'}
 
 
@@ -197,6 +221,12 @@
         deleteid = id;
         $("#delete_modal").modal();
     }
+
+    function resetuser_modal_show(id) {
+        resetuserid = id;
+        $("#resetuser_modal").modal();
+    }
+
 
     function changetouser_modal_show(id) {
         changetouserid = id;
@@ -341,6 +371,27 @@
         }
 
         $$.getElementById('changetouser_input').addEventListener('click', changetouser_id);
+
+        function resetuser_id() {
+            $.ajax({
+                type: "POST",
+                url: "/admin/user/resetuser",
+                dataType: "json",
+                data: {
+                    userid: resetuserid,
+                },
+                success: data => {
+                    $("#result").modal();
+                    $$.getElementById('msg').innerHTML = data.msg;
+                    window.setTimeout("location.href='/admin/user'", 1000);
+                },
+                error: jqXHR => {
+                    $("#result").modal();
+                    $$.getElementById('msg').innerHTML = `${ldelim}jqXHR{rdelim} 发生了错误。`;
+                }
+            });
+        }
+        $$.getElementById('resetuser_input').addEventListener('click', resetuser_id);
 
         function quickCreate() {
             $.ajax({

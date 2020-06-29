@@ -190,13 +190,18 @@ class Job
 
             if ($shop->reset() != 0 && $shop->reset_value() != 0 && $shop->reset_exp() != 0) {
                 $boughted_users[] = $bought->userid;
-                if ((time() - $shop->reset_exp() * 86400 < $bought->datetime) && (int)((time() - $bought->datetime) / 86400) % $shop->reset() == 0 && (int)((time() - $bought->datetime) / 86400) != 0) {
+                if ((time() < strtotime($user->class_expire)) && ($bought->reset - time()) < 86400 && ($bought->reset > time())) {
+//                if ((time() - $shop->reset_exp() * 86400 < $bought->datetime) && (int)((time() - $bought->datetime) / 86400) % $shop->reset() == 0 && (int)((time() - $bought->datetime) / 86400) != 0) {
+                    $bought->reset += $shop->reset() * 86400;
+                    $bought->save();
                     echo('流量重置-' . $user->id . "\n");
                     $user->transfer_enable = Tools::toGB($shop->reset_value());
                     $user->u = 0;
                     $user->d = 0;
                     $user->last_day_t = 0;
                     $user->save();
+		    $bought->reset = time() + $shop->reset() * 86400;
+		    $bought->save();
 
                     $subject = Config::get('appName') . '-您的流量被重置了';
                     $to = $user->email;
@@ -403,6 +408,7 @@ class Job
                 $bought_new->shopid = $shop->id;
                 $bought_new->datetime = time();
                 $bought_new->renew = time() + $shop->auto_renew * 86400;
+		$bought_new->reset = time() + $shop->reset() * 86400;
                 $bought_new->price = $shop->price;
                 $bought_new->coupon = '';
                 $bought_new->save();

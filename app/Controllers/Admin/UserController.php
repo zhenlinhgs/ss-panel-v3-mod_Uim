@@ -142,6 +142,11 @@ class UserController extends AdminController
                 $bought->coupon = '';
                 $bought->datetime = time();
                 $bought->renew = 0;
+	        if ($shop->reset() > 0 && !empty($shop->reset())) {
+                    $bought->reset = time() + $shop->reset() * 86400;
+	        } else {
+                    $bought->reset = 0;
+                }
                 $price = $shop->price;
                 $bought->price = $price;
                 $bought->save();
@@ -203,6 +208,11 @@ class UserController extends AdminController
         } else {
             $bought->renew = time() + $shop->auto_renew * 86400;
         }
+	if ($shop->reset() > 0 && !empty($shop->reset())) {
+            $bought->reset = time() + $shop->reset() * 86400;
+	} else {
+            $bought->reset = 0;
+	}
 
         $price = $shop->price;
         $bought->price = $price;
@@ -274,6 +284,11 @@ class UserController extends AdminController
         } else {
             $bought->renew = time() + $shop->auto_renew * 86400;
         }
+	if ($shop->reset() > 0 && !empty($shop->reset())) {
+            $bought->reset = time() + $shop->reset() * 86400;
+	} else {
+            $bought->reset = 0;
+	}
 
         $price = $shop->price;
         $bought->price = $price;
@@ -501,6 +516,61 @@ class UserController extends AdminController
         return $response->getBody()->write(json_encode($rs));
     }
 
+    public function resetuser($request, $response, $args)
+    {
+//$bought->renew 套餐续费的日期，套餐未开启续费就是0
+//$user->class_expire 用户等级过期时间=套餐时长$shop->reset_exp()+购买时间$bought->datetime
+//添加新字段 $bought->reset 套餐内的流量重置日= 购买时间$bought->datetime + 套餐重置时长$shop->reset()
+//更新的过程如下
+//新的套餐内流量重置日=当前时间time()+$shop->reset()
+//新的套餐重置日=当前时间time()+$user->class_expire-$bought->reset
+	$userid = $request->getParam('userid');
+	$user = User::find($userid);
+	$bought = Bought::where('userid', $userid)->orderBy('id', 'desc')->first();
+	if (empty($bought) || $user->class == 0 || strtotime($user->class_expire) < time()) {
+	    $rs['ret'] = 0;
+	    $rs['msg'] = '该用户当前未购买套餐';
+	    return $response->getBody()->write(json_encode($rs));
+	}
+	$shop = Shop::where('id', $bought->shopid)->first();
+	if (empty($shop)) {
+	    $rs['ret'] = 0;
+	    $rs['msg'] = '该用户购买的套餐已经被删除';
+	    return $response->getBody()->write(json_encode($rs));
+	}
+	if (empty($bought->reset) || $shop->reset_exp() <= $shop->reset() || $shop->reset_value() == 0 || $shop->reset() == 0 || $shop->reset_exp() == 0 || empty($shop->reset_exp()) || empty($shop->reset()) || empty($shop->reset_value())) {
+	    $rs['ret'] = 0;
+	    $rs['msg'] = '该用户购买的套餐不支持周期重置';
+	    return $response->getBody()->write(json_encode($rs));
+	}
+	//用户流量重置
+	$user->transfer_enable = Tools::toGB($shop->reset_value());
+	$user->u = 0;
+	$user->d = 0;
+	$user->last_day_t = 0;
+	//用户时间重置
+	if (time() + $shop->reset() * 86400 <= strtotime($user->class_expire)) {
+	    $user->class_expire = date('Y-m-d H:i:s', time() + strtotime($user->class_expire) - $bought->reset);
+            $bought->reset = time() + $shop->reset() * 86400;
+	    $user->expire_in = $user->class_expire;
+	    $user->save();
+	    $bought->save();
+	    $rs['ret'] = 1;
+	    $rs['msg'] = '重置成功';
+	    return $response->getBody()->write(json_encode($rs));
+	} else {
+	    $user->class_expire = date('Y-m-d H:i:s', time());
+	    $user->expire_in = $user->class_expire;
+	    $user->transfer_enable = 0;
+	    $bought->reset = 0;
+	    $user->save();
+	    $bought->save();
+	    $rs['ret'] = 1;
+	    $rs['msg'] = '该用户已处于套餐最后一个周期内，已关闭该套餐，请为他重新添加套餐';
+	    return $response->getBody()->write(json_encode($rs));
+        }
+    }
+
     public function ajax($request, $response, $args)
     {
         //得到排序的方式
@@ -599,6 +669,7 @@ class UserController extends AdminController
             $tempdata['op'] = '<a class="btn btn-brand" href="/admin/user/' . $user->id . '/edit">编辑</a>
                     <a class="btn btn-brand-accent" id="delete" href="javascript:void(0);" onClick="delete_modal_show(\'' . $user->id . '\')">删除</a>
                     <a class="btn btn-brand" href="/admin/user/' . $user->id . '/bought">查套餐</a>
+                    <a class="btn btn-brand" id="resetuser" href="javascript:void(0);" onClick="resetuser_modal_show(\'' . $user->id . '\')">重置</a>
                     <a class="btn btn-brand" id="changetouser" href="javascript:void(0);" onClick="changetouser_modal_show(\'' . $user->id . '\')">切换为该用户</a>';
             $tempdata['id'] = $user->id;
             $tempdata['user_name'] = $user->user_name;
@@ -794,6 +865,12 @@ class UserController extends AdminController
         $bought->userid = $user->id;
         $bought->shopid = $shop->id;
         $bought->datetime = time();
+	if ($shop->reset() > 0 && !empty($shop->reset())) {
+            $bought->reset = time() + $shop->reset() * 86400;
+	} else {
+            $bought->reset = 0;
+        }
+
         $bought->renew = 0;
         $bought->coupon = '';
         $bought->price = $shop->price;
